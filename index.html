@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One On-Page SEO Analyzer Tool | Meta, Keywords, Links</title>
+    <meta name="description" content="A free, real-time On-Page SEO Toolkit to analyze any website. Check meta tags, heading structure, keyword density, image alt text, links, and structured data to improve your Google ranking.">
+    <meta name="keywords" content="seo tool, seo analyzer, on-page seo, meta tag checker, keyword density, serp preview, free seo tool, image seo, link analyzer">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #3b82f6; /* blue-500 */
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .heading-tag {
+            font-family: monospace;
+            font-size: 0.8rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .analysis-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-5xl font-bold text-slate-900">All-in-One On-Page SEO Toolkit</h1>
+            <p class="text-slate-500 mt-3 max-w-2xl mx-auto">A free, browser-based suite of tools to analyze and optimize your website's on-page SEO in real-time.</p>
+        </header>
+        
+        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-8 ring-1 ring-slate-900/5 analysis-card">
+            <label for="url-input" class="block text-lg font-semibold text-slate-800 mb-2">Analyze any URL</label>
+            <p class="text-slate-500 mb-4">Enter a URL to automatically run all analyses below. Get a complete on-page SEO report in seconds.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="url" id="url-input" placeholder="https://example.com" class="flex-grow w-full px-4 py-3 text-slate-700 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                <button id="fetch-button" class="w-full sm:w-auto bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center transform hover:scale-105">
+                    <span id="fetch-button-text">Fetch & Analyze</span>
+                    <div id="fetch-spinner" class="spinner hidden" style="width: 20px; height: 20px; border-width: 2px;"></div>
+                </button>
+            </div>
+            <p id="fetch-error" class="text-red-500 text-sm mt-2 hidden"></p>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Meta Tag & SERP Preview Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                <div class="flex items-center mb-6">
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">1. Meta Tag & SERP Preview</h2><p class="text-slate-500">Craft the perfect title and description and see a live Google preview.</p></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center"><label for="title-input" class="block text-sm font-medium text-slate-700">SEO Title</label><span id="title-counter" class="text-sm text-slate-500">0 / 60</span></div>
+                            <input type="text" id="title-input" class="w-full mt-1 px-4 py-2 text-slate-700 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 mt-2"><div id="title-progress" class="bg-blue-600 h-1.5 rounded-full transition-all" style="width: 0%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center"><label for="description-input" class="block text-sm font-medium text-slate-700">Meta Description</label><span id="description-counter" class="text-sm text-slate-500">0 / 160</span></div>
+                            <textarea id="description-input" rows="4" class="w-full mt-1 px-4 py-2 text-slate-700 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 mt-2"><div id="description-progress" class="bg-blue-600 h-1.5 rounded-full transition-all" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="text-sm font-semibold mb-3 text-slate-600">Desktop SERP Preview</h3>
+                        <div class="p-2 rounded-md">
+                            <div class="flex items-center mb-1"><img src="https://www.google.com/s2/favicons?domain=google.com" class="w-4 h-4 mr-2" alt="Favicon" id="serp-favicon"><div><p id="serp-url" class="text-sm text-slate-600 truncate">https://your-website.com</p></div></div>
+                            <h3 id="serp-title" class="text-blue-800 text-xl font-medium truncate hover:underline cursor-pointer">Your SEO Title Goes Here</h3>
+                            <p id="serp-description" class="text-slate-600 text-sm" style="line-height: 1.57;">Your meta description will be displayed here. Aim for around 155-160 characters for optimal length.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heading Structure Analyzer Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                 <div class="flex items-center mb-4">
+                    <div class="bg-green-100 text-green-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">2. Heading Structure Analyzer</h2><p class="text-slate-500">Review the H1-H6 hierarchy. A logical structure is key for search engines.</p></div>
+                </div>
+                <div id="heading-results-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]"><p class="text-slate-500 text-center py-8">Analysis will appear here after fetching a URL.</p></div>
+            </div>
+
+            <!-- Image SEO Analyzer Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-sky-100 text-sky-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">3. Image SEO Analyzer</h2><p class="text-slate-500">Check for missing `alt` text on images to improve accessibility and rankings.</p></div>
+                </div>
+                <div id="image-results-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]"><p class="text-slate-500 text-center py-8">Image analysis will appear here after fetching a URL.</p></div>
+            </div>
+
+             <!-- Keyword Density Analyzer Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-amber-100 text-amber-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">4. Keyword Density Analyzer</h2><p class="text-slate-500">Discover the most frequent keywords and phrases used in the page content.</p></div>
+                </div>
+                <div id="keyword-results-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]"><p class="text-slate-500 text-center py-8">Keyword analysis will appear here after fetching a URL.</p></div>
+            </div>
+
+            <!-- Link Analyzer Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-rose-100 text-rose-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">5. Link Analyzer</h2><p class="text-slate-500">Get a summary of all internal and external links found on the page.</p></div>
+                </div>
+                <div id="link-results-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]"><p class="text-slate-500 text-center py-8">Link analysis will appear here after fetching a URL.</p></div>
+            </div>
+            
+            <!-- Structured Data Viewer Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg ring-1 ring-slate-900/5 analysis-card">
+                <div class="flex items-center mb-4">
+                    <div class="bg-violet-100 text-violet-600 p-2 rounded-lg mr-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+                    <div><h2 class="text-xl font-semibold text-slate-900">6. Structured Data Viewer</h2><p class="text-slate-500">Find and review JSON-LD Schema markup to ensure rich snippet eligibility.</p></div>
+                </div>
+                <div id="schema-results-container" class="bg-slate-50 p-4 rounded-lg border border-slate-200 min-h-[100px]"><p class="text-slate-500 text-center py-8">Schema analysis will appear here after fetching a URL.</p></div>
+            </div>
+
+        </div>
+
+        <footer class="text-center mt-12">
+            <p class="text-slate-500 text-sm">Built with ❤️ to help you rank better.</p>
+        </footer>
+    </div>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What is an On-Page SEO Analyzer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An On-Page SEO Analyzer is a tool that evaluates the content and structure of a single web page to identify areas for improvement in search engine rankings. This tool checks elements like meta tags, heading structure, keyword density, image alt text, and internal/external links to ensure they are optimized for search engines like Google."
+        }
+      },{
+        "@type": "Question",
+        "name": "Why is Keyword Density important for SEO?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Keyword density helps search engines understand the main topic of a page. By analyzing the frequency of specific keywords and phrases, you can ensure your content is relevant to the search queries you are targeting. A good keyword density analyzer helps you avoid 'keyword stuffing' while confirming your content is focused."
+        }
+      },{
+        "@type": "Question",
+        "name": "How does this tool check SEO?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "This tool fetches the HTML content of the URL you provide and analyzes it directly in your browser. It parses the content to extract meta tags, headings, images, links, and text. It then runs a series of checks and calculations on these elements and presents the findings in an easy-to-understand report, allowing you to quickly identify and fix on-page SEO issues."
+        }
+      }]
+    }
+    </script>
+
+    <script>
+        const urlInput = document.getElementById('url-input'), fetchButton = document.getElementById('fetch-button'), fetchButtonText = document.getElementById('fetch-button-text'), fetchSpinner = document.getElementById('fetch-spinner'), fetchError = document.getElementById('fetch-error'), titleInput = document.getElementById('title-input'), titleCounter = document.getElementById('title-counter'), titleProgress = document.getElementById('title-progress'), descriptionInput = document.getElementById('description-input'), descriptionCounter = document.getElementById('description-counter'), descriptionProgress = document.getElementById('description-progress'), serpUrl = document.getElementById('serp-url'), serpTitle = document.getElementById('serp-title'), serpDescription = document.getElementById('serp-description'), serpFavicon = document.getElementById('serp-favicon'), headingResultsContainer = document.getElementById('heading-results-container'), imageResultsContainer = document.getElementById('image-results-container'), keywordResultsContainer = document.getElementById('keyword-results-container'), linkResultsContainer = document.getElementById('link-results-container'), schemaResultsContainer = document.getElementById('schema-results-container');
+        const TITLE_MAX_LEN = 60, DESC_MAX_LEN = 160;
+        titleInput.addEventListener('input', updateTitle);
+        descriptionInput.addEventListener('input', updateDescription);
+        fetchButton.addEventListener('click', fetchUrlData);
+        urlInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') fetchUrlData(); });
+        function updateTitle() {
+            const len = titleInput.value.length;
+            serpTitle.textContent = titleInput.value || 'Your SEO Title Goes Here';
+            titleCounter.textContent = `${len} / ${TITLE_MAX_LEN}`;
+            titleProgress.style.width = `${Math.min(len/TITLE_MAX_LEN*100,100)}%`;
+            titleProgress.className = len > TITLE_MAX_LEN ? 'bg-red-500 h-1.5 rounded-full transition-all' : 'bg-blue-600 h-1.5 rounded-full transition-all';
+            titleCounter.classList.toggle('text-red-500', len > TITLE_MAX_LEN);
+        }
+        function updateDescription() {
+            const len = descriptionInput.value.length;
+            serpDescription.textContent = descriptionInput.value || 'Your meta description will be displayed here...';
+            descriptionCounter.textContent = `${len} / ${DESC_MAX_LEN}`;
+            descriptionProgress.style.width = `${Math.min(len/DESC_MAX_LEN*100,100)}%`;
+            descriptionProgress.className = len > DESC_MAX_LEN ? 'bg-red-500 h-1.5 rounded-full transition-all' : 'bg-blue-600 h-1.5 rounded-full transition-all';
+            descriptionCounter.classList.toggle('text-red-500', len > DESC_MAX_LEN);
+        }
+        function setLoadingState(isLoading) {
+            fetchButton.disabled = isLoading;
+            fetchButtonText.classList.toggle('hidden', isLoading);
+            fetchSpinner.classList.toggle('hidden', !isLoading);
+            if (isLoading) fetchError.classList.add('hidden');
+        }
+        function applyFadeIn(container, content) {
+            container.innerHTML = '';
+            container.classList.remove('fade-in');
+            // This timeout allows the browser to remove the class before re-adding it, ensuring the animation restarts
+            setTimeout(() => {
+                if (typeof content === 'string') {
+                    container.innerHTML = content;
+                } else {
+                    container.appendChild(content);
+                }
+                container.classList.add('fade-in');
+            }, 10);
+        }
+        function showError(msg) { fetchError.textContent = msg; fetchError.classList.remove('hidden'); }
+        function analyzeHeadings(doc) {
+            const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            if (!headings.length) { applyFadeIn(headingResultsContainer, '<p class="text-slate-500 text-center py-8">No headings (H1-H6) were found.</p>'); return; }
+            const frag = document.createDocumentFragment();
+            const h1s = doc.querySelectorAll('h1');
+            if (h1s.length !== 1) {
+                const warning = document.createElement('div');
+                warning.className = 'mb-3 p-3 bg-yellow-100 text-yellow-800 text-sm rounded-md flex items-start';
+                warning.innerHTML = `<svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><div><strong>Warning:</strong> Found ${h1s.length} H1 tags. A page should have exactly one H1.</div>`;
+                frag.appendChild(warning);
+            }
+            headings.forEach(h => {
+                const level = parseInt(h.tagName.substring(1));
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex items-center py-2 border-b border-slate-100 last:border-b-0';
+                wrapper.innerHTML = `<span class="heading-tag bg-slate-200 text-slate-700 ml-${(level-1)*4}">${h.tagName}</span><p class="ml-3 text-slate-800 text-sm">${h.textContent.trim()}</p>`;
+                frag.appendChild(wrapper);
+            });
+            applyFadeIn(headingResultsContainer, frag);
+        }
+        function analyzeImages(doc, pageUrl) {
+            const images = doc.querySelectorAll('img'); let missingAlt = 0;
+            if (!images.length) { applyFadeIn(imageResultsContainer, '<p class="text-slate-500 text-center py-8">No images were found.</p>'); return; }
+            const container = document.createDocumentFragment();
+            const list = document.createElement('div'); list.className = 'space-y-3';
+            images.forEach(img => {
+                const alt = img.getAttribute('alt'); const hasAlt = alt && alt.trim() !== ''; if (!hasAlt) missingAlt++;
+                let src = img.getAttribute('src'); if (src) { try { src = new URL(src, pageUrl.origin).href; } catch (e) {} }
+                const item = document.createElement('div'); item.className = `flex items-start p-3 rounded-lg ${hasAlt?'bg-green-50':'bg-red-50'}`;
+                item.innerHTML = `<img src="${src||'https://placehold.co/40x40/f0f0f0/a0a0a0?text=IMG'}" onerror="this.src='https://placehold.co/40x40/f0f0f0/a0a0a0?text=ERR'" class="w-10 h-10 object-cover rounded-md mr-4 flex-shrink-0" alt="Preview"><div class="flex-grow text-sm"><p class="font-semibold ${hasAlt?'text-green-800':'text-red-800'}">${hasAlt?'Alt Text OK':'Alt Text Missing'}</p><p class="text-slate-600 mt-1 break-all"><strong>Alt:</strong> "${alt||''}"</p></div>`;
+                list.appendChild(item);
+            });
+            const summary = document.createElement('div');
+            summary.className = `p-3 rounded-md mb-4 text-sm font-medium ${missingAlt > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`;
+            summary.textContent = `Found ${images.length} images. ${missingAlt} are missing descriptive alt text.`;
+            container.appendChild(summary); container.appendChild(list);
+            applyFadeIn(imageResultsContainer, container);
+        }
+        function analyzeKeywords(doc) {
+            const text = doc.body.innerText.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').toLowerCase();
+            const words = text.split(' ').filter(w => w.length > 2 && isNaN(w));
+            if (words.length < 10) { applyFadeIn(keywordResultsContainer, '<p class="text-slate-500 text-center py-8">Not enough text content to analyze keywords.</p>'); return; }
+            const getFreq = (arr) => arr.reduce((acc, w) => { acc[w] = (acc[w] || 0) + 1; return acc; }, {});
+            const oneWord = Object.entries(getFreq(words)).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            const twoWords = Object.entries(getFreq(words.map((w,i)=>words[i+1]?w+' '+words[i+1]:null).filter(Boolean))).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            const threeWords = Object.entries(getFreq(words.map((w,i)=>words[i+2]?w+' '+words[i+1]+' '+words[i+2]:null).filter(Boolean))).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            const renderTable = (data, title) => `<div class="flex-1 min-w-[200px]"><h4 class="font-semibold text-slate-700 mb-2">${title}</h4><table class="w-full text-sm"><tbody>${data.map(([k,v])=>`<tr><td class="p-2 border-b border-slate-100">${k}</td><td class="p-2 border-b border-slate-100 font-semibold text-right">${v}</td></tr>`).join('')}</tbody></table></div>`;
+            const content = `<div class="flex flex-wrap gap-6">${renderTable(oneWord, '1-Word Phrases')}${renderTable(twoWords, '2-Word Phrases')}${renderTable(threeWords, '3-Word Phrases')}</div>`;
+            applyFadeIn(keywordResultsContainer, content);
+        }
+        function analyzeLinks(doc, pageUrl) {
+            const links = doc.querySelectorAll('a[href]'); let internal = 0, external = 0;
+            if (!links.length) { applyFadeIn(linkResultsContainer, '<p class="text-slate-500 text-center py-8">No links found on this page.</p>'); return; }
+            const container = document.createDocumentFragment();
+            const list = document.createElement('div'); list.className = 'space-y-2';
+            links.forEach(link => {
+                let href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+                try {
+                    const absUrl = new URL(href, pageUrl.origin);
+                    const isInternal = absUrl.hostname === pageUrl.hostname;
+                    if (isInternal) internal++; else external++;
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center text-sm p-2 rounded-md bg-white border border-slate-200';
+                    item.innerHTML = `<span class="font-semibold py-1 px-2 rounded-md text-xs mr-3 ${isInternal?'bg-sky-100 text-sky-800':'bg-fuchsia-100 text-fuchsia-800'}">${isInternal?'Internal':'External'}</span><a href="${absUrl.href}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline truncate">${link.textContent.trim()||absUrl.href}</a>`;
+                    list.appendChild(item);
+                } catch(e) {}
+            });
+            const summary = document.createElement('div');
+            summary.className = 'p-3 rounded-md mb-4 text-sm font-medium bg-slate-100 text-slate-800';
+            summary.textContent = `Found ${internal} internal and ${external} external links.`;
+            container.appendChild(summary); container.appendChild(list);
+            applyFadeIn(linkResultsContainer, container);
+        }
+        function analyzeSchema(doc) {
+            const schemas = doc.querySelectorAll('script[type="application/ld+json"]');
+            if (!schemas.length) { applyFadeIn(schemaResultsContainer, '<p class="text-slate-500 text-center py-8">No JSON-LD structured data found.</p>'); return; }
+            const container = document.createDocumentFragment();
+            schemas.forEach((s, i) => {
+                try {
+                    const data = JSON.parse(s.textContent);
+                    const pre = document.createElement('pre');
+                    pre.className = 'bg-slate-800 text-white p-4 rounded-lg text-xs whitespace-pre-wrap break-all';
+                    pre.textContent = JSON.stringify(data, null, 2);
+                    container.appendChild(pre);
+                } catch (e) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'p-3 bg-red-100 text-red-800 text-sm rounded-md';
+                    errorDiv.textContent = `Error parsing schema #${i+1}: ${e.message}`;
+                    container.appendChild(errorDiv);
+                }
+            });
+            applyFadeIn(schemaResultsContainer, container);
+        }
+        function clearResults() {
+            const placeholder = '<p class="text-slate-500 text-center py-8">Analysis will appear here after fetching a URL.</p>';
+            [headingResultsContainer, imageResultsContainer, keywordResultsContainer, linkResultsContainer, schemaResultsContainer].forEach(c => {
+                c.innerHTML = placeholder;
+                c.classList.remove('fade-in');
+            });
+            titleInput.value = ''; descriptionInput.value = ''; updateTitle(); updateDescription();
+            serpUrl.textContent = 'https://your-website.com';
+            serpFavicon.src = 'https://www.google.com/s2/favicons?domain=google.com';
+        }
+        async function fetchUrlData() {
+            let urlStr = urlInput.value.trim(); if (!urlStr) { showError('Please enter a valid URL.'); return; }
+            if (!urlStr.startsWith('http')) urlStr = 'https://' + urlStr; urlInput.value = urlStr;
+            let pageUrl; try { pageUrl = new URL(urlStr); } catch (e) { showError('Invalid URL format.'); return; }
+            setLoadingState(true); clearResults();
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlStr)}`;
+            try {
+                const res = await fetch(proxyUrl); if (!res.ok) throw new Error('Network response not OK.');
+                const data = await res.json(); if (!data.contents) throw new Error('Could not fetch content.');
+                const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+                const title = doc.querySelector('title')?.textContent || '';
+                const desc = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+                titleInput.value = title; descriptionInput.value = desc;
+                updateTitle(); updateDescription();
+                serpUrl.textContent = pageUrl.hostname;
+                serpFavicon.src = `https://www.google.com/s2/favicons?domain=${pageUrl.hostname}&sz=64`;
+                serpFavicon.onerror = () => { serpFavicon.src = 'https://placehold.co/16x16/f0f0f0/a0a0a0?text=F'; };
+                analyzeHeadings(doc); analyzeImages(doc, pageUrl); analyzeKeywords(doc); analyzeLinks(doc, pageUrl); analyzeSchema(doc);
+            } catch (e) { console.error('Fetch error:', e); showError(`Failed to fetch data. The website may be blocking requests or is offline.`); } 
+            finally { setLoadingState(false); }
+        }
+        updateTitle(); updateDescription();
+    </script>
+</body>
+</html>
